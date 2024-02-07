@@ -1,36 +1,41 @@
-import React, {useState, useEffect} from 'react';
+import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
-
-const socket = io('http://localhost:3000');
+import { Link, BrowserRouter as Router, Switch, Route, RouterProvider, Routes } from "react-router-dom";
+import Navbar from './components/navbar/navbar.js';
+import Signup from './components/signup/SingupForm.js';
 
 function App() {
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
+    const [socketId, setSocketId] = useState(null);
 
-  useEffect(() => {
-      socket.on('chat message', (msg) => {
-          setMessages([...messages, msg]);
-      });
-  }, [messages]);
+    useEffect(() => {
+        // Establish socket connection when the component mounts
+        const socket = io('http://localhost:4040');
+        socket.on('connect', () => {
+            console.log('Connected to server');
+            setSocketId(socket.id); // Set the socket ID once connected
+        });
 
-  const sendMessage = () => {
-      socket.emit('chat message', input);
-      setInput('');
-  };
+        socket.on('disconnect', () => {
+            console.log('Disconnected from server');
+            setSocketId(null); // Clear the socket ID on disconnection
+        });
 
-  return (
-    <div>
-      <h1>Chat App</h1>
-      <h2>COMP 3133 - Lab Test 2</h2>
-          <ul>
-              {messages.map((msg, index) => (
-                  <li key={index}>{msg}</li>
-              ))}
-          </ul>
-          <input value={input} onChange={(e) => setInput(e.target.value)} />
-          <button onClick={sendMessage}>Send</button>
-    </div>
-  );
+        // Clean up socket connection when the component unmounts
+        return () => {
+            socket.disconnect();
+        };
+    }, []); // Empty dependency array ensures this effect runs only once
+
+    return (
+        <div className="App">
+            <Router>
+                <Navbar />
+                <Routes>
+                <Route path='/signup' element={<Signup />}/>
+                </Routes>
+            </Router>
+        </div>
+    );
 }
 
 export default App;
