@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:4040');
 
 export default function SingupForm() {
     const [newUser, setNewUser] = useState(

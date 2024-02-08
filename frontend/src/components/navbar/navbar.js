@@ -11,9 +11,19 @@ export default function Navbar({loggedInUser, setLoggedInUser}) {
     return(
         <nav className='navbar'>
             <ul className='navList'>
-                {/* <li className='navItem'><Link to="login" onClick={logout}>Logout</Link></li> */}
-                <li className='navItem'><Link to="signup">Sign Up</Link></li>
-                {/* <li className='navItem'><Link to="login">Login</Link></li> */}
+                {/* <li className='navItem'><Link to="/">Home</Link></li> */}
+                {loggedInUser ? (
+                    <>
+                        <li className='navItem'><Link to="rooms">Rooms</Link></li>
+                        <li className='navItem'><Link to="login" onClick={logout}>Logout</Link></li>
+                    </>
+                ) : (
+                    <>
+                        <li className='navItem'><Link to="signup">Sign Up</Link></li>
+                        <li className='navItem'><Link to="login">Login</Link></li>
+                    </>
+                )}
+                
             </ul>
         </nav>
     )
